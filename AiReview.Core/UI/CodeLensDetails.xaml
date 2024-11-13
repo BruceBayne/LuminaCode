@@ -1,0 +1,125 @@
+﻿<UserControl x:Class="AiReview.Core.UI.CodeLensDetailsControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ui="clr-namespace:AiReview.Core.UI"
+             xmlns:local="clr-namespace:AiReview.Core.UI"
+             mc:Ignorable="d" 
+             ToolTip="Ai-Review"
+             d:DesignHeight="950" d:DesignWidth="600"
+             d:DataContext="{d:DesignInstance local:CodeLensDetailsModel, IsDesignTimeCreatable=True}">
+    <UserControl.Resources>
+        <local:StarRatingConverter x:Key="StarRatingConverter" />
+    </UserControl.Resources>
+
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="10">
+
+            <!-- Iterate over Issues -->
+            <ItemsControl ItemsSource="{Binding Issues}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Outer Grid Container -->
+                        <Border CornerRadius="5"
+                                Margin="3"
+                                Padding="1"
+                                Background="Aquamarine">
+
+                            <Grid Margin="5,5,5,10">
+                                <!-- Define Columns -->
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <!-- Column for Icon -->
+                                    <ColumnDefinition Width="*" />
+                                    <!-- Column for Category -->
+                                    <ColumnDefinition Width="2*" />
+                                    <!-- Column for Description -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Icon -->
+                                <Image Grid.Column="0"
+                                       Width="16" Height="16"
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center">
+                                    <!--<Image.Style>
+                                        <Style TargetType="Image">
+                                            <Setter Property="Source" Value="Resources/DefaultIcon.png" />
+                                            --><!-- Default icon --><!--
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Category}" Value="Critical">
+                                                    <Setter Property="Source" Value="Resources/Critical.png" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Category}" Value="Warning">
+                                                    <Setter Property="Source" Value="Resources/Warning.png" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Category}" Value="Info">
+                                                    <Setter Property="Source" Value="Resources/Info.png" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>-->
+                                </Image>
+
+                                <!-- Category -->
+                                <TextBlock Text="{Binding Category}" 
+                                           Grid.Column="1"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"
+                                           FontWeight="Bold">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="Black" />
+                                            <Style.Triggers>
+                                                <!-- Conditional Colors -->
+                                                <DataTrigger Binding="{Binding Category}" Value="Critical">
+                                                    <Setter Property="Foreground" Value="Red" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Category}" Value="Warning">
+                                                    <Setter Property="Foreground" Value="Orange" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Category}" Value="Info">
+                                                    <Setter Property="Foreground" Value="Green" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+
+                                <!-- Description -->
+                                <TextBlock Text="{Binding Description}" 
+                                           Grid.Column="2"
+                                           TextWrapping="Wrap"
+                                           Foreground="#333333"
+                                           VerticalAlignment="Center" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- Footer for Score and LLM Model Info -->
+            <StackPanel Margin="0,20,0,0" >
+                <!-- Display Review Score as Stars -->
+                <TextBlock Text="Review Score:" 
+                           FontWeight="Bold" 
+                           Margin="0,0,0,5" 
+                           Foreground="#333" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding ReviewScore, Converter={StaticResource StarRatingConverter}}" 
+                               FontSize="16" 
+                               Foreground="Goldenrod" />
+                </StackPanel>
+
+                <!-- Display LLM Model Info -->
+                <TextBlock Text="LLM Model:" 
+                           FontWeight="Bold" 
+                           Margin="0,10,0,0" 
+                           Foreground="#333" />
+                <TextBlock Text="{Binding LLmProps}" 
+                           FontSize="14" 
+                           Foreground="#555" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
