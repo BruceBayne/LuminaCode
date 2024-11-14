@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -11,12 +11,88 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="NewFolder\**" />
+    <EmbeddedResource Remove="NewFolder\**" />
+    <None Remove="NewFolder\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <Compile Remove="TestCases\Database\Airline Complex DB Update.cs" />
+      <Compile Remove="TestCases\Database\EF LostUpdate Full.cs" />
+      <Compile Remove="TestCases\Database\EF LostUpdate Reduced.cs" />
+      <Compile Remove="TestCases\Database\NumberSeriesRawSql.cs" />
+      <Compile Remove="TestCases\Database\SqlCases.cs" />
+      <Compile Remove="TestCases\Database\TransactionDummy.cs" />
+      <Compile Remove="TestCases\Simple\Basic01.cs" />
+      <Compile Remove="TestCases\Simple\ChatGptGeneratedBadCode.cs" />
+      <Compile Remove="TestCases\Simple\ClassScope.cs" />
+      <Compile Remove="TestCases\Simple\Scheduler.cs" />
+    <Compile Remove="TestCases\Simple\Shared State Race Condition.cs" />
+    <Compile Remove="TestCases\Simple\Main.Only.cs" />
+    <Compile Remove="TestCases\Simple\Mapping01.cs" />
+    <Compile Remove="TestCases\Simple\Temperature.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="TestCases\Database\EF LostUpdate Reduced.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Database\NumberSeriesRawSql.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Database\Airline Complex DB Update.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Database\SqlCases.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Database\TransactionDummy.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+    <None Include="TestCases\Database\EF LostUpdate Full.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+    <None Include="TestCases\Simple\Scheduler.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+    <None Include="TestCases\Simple\ChatGptGeneratedBadCode.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+
+    <None Include="TestCases\Simple\ClassScope.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Simple\Shared State Race Condition.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Simple\Temperature.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Simple\Mapping01.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Simple\Main.Only.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestCases\Simple\Basic01.cs">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BERTTokenizers" Version="1.2.0" />
     <PackageReference Include="coverlet.collector" Version="6.0.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="FluentAssertions" Version="6.12.2" />
+    <PackageReference Include="Microsoft.ML.OnnxRuntime.Gpu" Version="1.20.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="SciSharp.TensorFlow.Redist-Windows-GPU" Version="2.10.3" />
+    <PackageReference Include="TensorFlow.NET" Version="0.150.0" />
     <PackageReference Include="xunit" Version="2.9.2" />
     <PackageReference Include="Xunit.Combinatorial" Version="1.6.24" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
@@ -26,11 +102,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AiReview-cli\AiReview-cli.csproj" />
     <ProjectReference Include="..\AiReview.Core\AiReview.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
+
+
 
 </Project>

@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AiReview.Core;
+using System.Windows.Forms;
 using AiReview.Core.OpenAI;
 using AiReview.Core.UI;
+using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Language.CodeLens;
 using Microsoft.VisualStudio.Language.CodeLens.Remoting;
 using Microsoft.VisualStudio.Threading;
@@ -13,9 +13,10 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
 {
 	public class CodeLensDataPoint : IAsyncCodeLensDataPoint
 	{
+		private readonly ICodeLensCallbackService devEnv;
 		private static LmStudioClient aiClient = new();
 
-		private CodeReviewSummary summary  = CodeReviewSummary.Dummy;
+		private CodeReviewSummary summary = CodeReviewSummary.Dummy;
 
 		private static readonly CodeLensDetailEntryCommand refreshCmdId = new()
 		{
@@ -27,23 +28,10 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
 		public CodeLensDescriptor Descriptor { get; }
 		public event AsyncEventHandler InvalidatedAsync;
 
-		public CodeLensDataPoint(CodeLensDescriptor descriptor)
+		public CodeLensDataPoint(CodeLensDescriptor descriptor, ICodeLensCallbackService devEnv)
 		{
+			this.devEnv = devEnv;
 			Descriptor = descriptor;
-		}
-
-
-		async Task<CodeReviewSummary> GenerateAiResponse(string code)
-		{
-			var chatMessages = new List<ChatMessage>
-			{
-				new() { role = "user", content = MyWorkspace.AiPromptTemplate },
-				new() { role = "user", content = code },
-			};
-
-			var aiResponse=await aiClient.GenerateChatResponseAsync(chatMessages).ConfigureAwait(false);
-			var reviewSummary = AiResponseConverter.ToReviewSummary(aiResponse);
-			return reviewSummary;
 		}
 
 
@@ -58,14 +46,27 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
 			var path = Descriptor.FilePath;
 			var from = ctx.ApplicableSpan.Value.Start;
 			var to = ctx.ApplicableSpan.Value.Length;
-			var code = MyWorkspace.GetContentFromFile(Descriptor.FilePath, from, to);
+			var end = ctx.ApplicableSpan.Value.End;
 
 
-			summary = await GenerateAiResponse(code);
+			var sourceCode = await devEnv.InvokeAsync<string>(this, nameof(IAiReviewService.ExtractSourceCode),
+				[path, from, end], cancellationToken: token);
+
+			summary = await TimeBasedCache.GenerateAiResponseAsync(sourceCode);
+
+
+			if (summary.IsEmpty || summary.HasOnlyMinorIssues)
+			{
+				return new CodeLensDataPointDescriptor
+				{
+					Description = $"AI-Review:: {summary.LLmProps} [passed]",
+					TooltipText = "-",
+					ImageId = new ImageId(),
+				};
+			}
 
 
 			var stars = new string('★', summary.ReviewScore).PadRight(10, '☆');
-			
 			var descriptor = new CodeLensDataPointDescriptor
 			{
 				Description = $"AI-Review::{summary.LLmProps} Score: {summary.ReviewScore}/10 {stars}",
@@ -83,12 +84,17 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
 		{
 			await Task.CompletedTask.ConfigureAwait(false);
 
+			if (ctx.ApplicableSpan == null)
+				return null;
 
 			var from = ctx.ApplicableSpan.Value.Start;
-			var to = ctx.ApplicableSpan.Value.Length;
-			var code = MyWorkspace.GetContentFromFile(Descriptor.FilePath, from, to);
-			summary = await GenerateAiResponse(code);
+			var end = ctx.ApplicableSpan.Value.End;
 
+
+			var sourceCode = await devEnv.InvokeAsync<string>(this, nameof(IAiReviewService.ExtractSourceCode),
+				[Descriptor.FilePath, from, end], cancellationToken: token);
+
+			summary = await TimeBasedCache.GenerateAiResponseAsync(sourceCode);
 
 			return new CodeLensDetailsDescriptor
 			{
@@ -112,7 +118,7 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
 					}
 				],
 
-				CustomData = [new CodeLensDetailsModel(){Issues = summary.Issues, ReviewScore = summary.ReviewScore}],
+				CustomData = [new CodeLensDetailsModel { Issues = summary.Issues, ReviewScore = summary.ReviewScore }],
 
 				PaneNavigationCommands =
 				[

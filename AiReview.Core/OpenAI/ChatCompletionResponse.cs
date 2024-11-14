@@ -11,4 +11,15 @@ namespace AiReview.Core.OpenAI
 		public IEnumerable<ChatChoice> Choices { get; set; }
 		public Usage Usage { get; set; }
 	}
+
+
+
+	
+
+	public sealed class ModelsResponse
+	{
+		
+
+		public  IEnumerable<ModelInfo> Data { get; set; }
+	}
 }

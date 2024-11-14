@@ -22,54 +22,40 @@
                     <DataTemplate>
                         <!-- Outer Grid Container -->
                         <Border CornerRadius="5"
-                                Margin="3"
-                                Padding="1"
-                                Background="Aquamarine">
+                                Margin="1"
+                                Padding="0"
+                                Background="Transparent">
 
                             <Grid Margin="5,5,5,10">
                                 <!-- Define Columns -->
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="55" />
                                     <!-- Column for Icon -->
-                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="250" />
                                     <!-- Column for Category -->
-                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="450" />
                                     <!-- Column for Description -->
                                 </Grid.ColumnDefinitions>
 
-                                <!-- Icon -->
-                                <Image Grid.Column="0"
-                                       Width="16" Height="16"
-                                       Margin="0,0,5,0"
-                                       VerticalAlignment="Center">
-                                    <!--<Image.Style>
-                                        <Style TargetType="Image">
-                                            <Setter Property="Source" Value="Resources/DefaultIcon.png" />
-                                            --><!-- Default icon --><!--
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Category}" Value="Critical">
-                                                    <Setter Property="Source" Value="Resources/Critical.png" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Category}" Value="Warning">
-                                                    <Setter Property="Source" Value="Resources/Warning.png" />
-                                                </DataTrigger>
-                                                <DataTrigger Binding="{Binding Category}" Value="Info">
-                                                    <Setter Property="Source" Value="Resources/Info.png" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Image.Style>-->
-                                </Image>
+                                <TextBlock Text="{Binding Severity}" 
+                                           Grid.Column="0"
+                                           Margin="0,0,10,0"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
+                                           FontWeight="Bold">
+                                  
+                                </TextBlock>
 
                                 <!-- Category -->
                                 <TextBlock Text="{Binding Category}" 
                                            Grid.Column="1"
                                            Margin="0,0,10,0"
                                            VerticalAlignment="Center"
+                                           HorizontalAlignment="Left"
                                            FontWeight="Bold">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">
-                                            <Setter Property="Foreground" Value="Black" />
+                                            <Setter Property="Foreground" Value="White" />
                                             <Style.Triggers>
                                                 <!-- Conditional Colors -->
                                                 <DataTrigger Binding="{Binding Category}" Value="Critical">
@@ -90,8 +76,9 @@
                                 <TextBlock Text="{Binding Description}" 
                                            Grid.Column="2"
                                            TextWrapping="Wrap"
-                                           Foreground="#333333"
-                                           VerticalAlignment="Center" />
+                                           Foreground="White"
+                                           VerticalAlignment="Center" 
+                                           HorizontalAlignment="Left" />
                             </Grid>
                         </Border>
                     </DataTemplate>
@@ -104,7 +91,7 @@
                 <TextBlock Text="Review Score:" 
                            FontWeight="Bold" 
                            Margin="0,0,0,5" 
-                           Foreground="#333" />
+                           Foreground="White" />
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding ReviewScore, Converter={StaticResource StarRatingConverter}}" 
                                FontSize="16" 
@@ -115,10 +102,10 @@
                 <TextBlock Text="LLM Model:" 
                            FontWeight="Bold" 
                            Margin="0,10,0,0" 
-                           Foreground="#333" />
-                <TextBlock Text="{Binding LLmProps}" 
+                           Foreground="White" />
+                <TextBlock Text="{Binding Model}" 
                            FontSize="14" 
-                           Foreground="#555" />
+                           Foreground="Lime" />
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

@@ -1,7 +1,9 @@
 ﻿<SolutionConfiguration>
   <Settings>
     <AllowParallelTestExecution>False</AllowParallelTestExecution>
+    <DefaultTestTimeout>60000</DefaultTestTimeout>
     <EnableRDI>True</EnableRDI>
+    <MaxNumberOfProcessingThreads>1</MaxNumberOfProcessingThreads>
     <RdiConfigured>True</RdiConfigured>
     <SolutionConfigured>True</SolutionConfigured>
   </Settings>

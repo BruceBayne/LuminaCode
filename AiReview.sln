@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiReview.Tests", "AiReview.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiReview.Core", "AiReview.Core\AiReview.Core.csproj", "{616BF008-AD08-4675-A0A3-FFEB5C3B1F29}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AiReview-cli", "AiReview-cli\AiReview-cli.csproj", "{55034A6F-75DD-49E6-9C4D-06EA59079CEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{616BF008-AD08-4675-A0A3-FFEB5C3B1F29}.Release|arm64.Build.0 = Release|Any CPU
 		{616BF008-AD08-4675-A0A3-FFEB5C3B1F29}.Release|x86.ActiveCfg = Release|Any CPU
 		{616BF008-AD08-4675-A0A3-FFEB5C3B1F29}.Release|x86.Build.0 = Release|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Debug|arm64.Build.0 = Debug|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Debug|x86.Build.0 = Debug|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Release|arm64.ActiveCfg = Release|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Release|arm64.Build.0 = Release|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Release|x86.ActiveCfg = Release|Any CPU
+		{55034A6F-75DD-49E6-9C4D-06EA59079CEB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

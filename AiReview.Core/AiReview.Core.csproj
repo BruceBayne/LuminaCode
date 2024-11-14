@@ -53,7 +53,12 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MyWorkspace.cs" />
+    <Compile Include="AiResponseConverter.cs" />
+    <Compile Include="Database\ReviewAggregate.cs" />
+    <Compile Include="Database\ReviewDatabase.cs" />
+    <Compile Include="Database\ReviewReport.cs" />
+    <Compile Include="Database\SolutionDatabase.cs" />
+    <Compile Include="PromptDatabase.cs" />
     <Compile Include="OpenAI\ChatChoice.cs" />
     <Compile Include="OpenAI\ChatCompletionResponse.cs" />
     <Compile Include="OpenAI\ChatMessage.cs" />
@@ -77,11 +82,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ReviewAssistant.cs" />
+    <Compile Include="ReviewAssistantBuilder.cs" />
     <Compile Include="UI\CategoryColorConverter.cs" />
     <Compile Include="UI\CodeLensDetails.xaml.cs">
       <DependentUpon>CodeLensDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\CodeLensDetailsModel.cs" />
+    <Compile Include="UI\CodeReviewIssue.cs" />
+    <Compile Include="UI\CodeReviewSummary.cs" />
+    <Compile Include="UI\StarRatingConverter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
