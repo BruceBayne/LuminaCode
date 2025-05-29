@@ -13,7 +13,7 @@ public class CodeReviewSummary
 	public string RawRequest { get; set; }
 	public string RawResponse { get; set; }
 
-	public IEnumerable<CodeReviewIssue> Issues { get; set; }
+	public CodeReviewIssue[] Issues { get; set; }
 	public bool IsEmpty => Issues == null || !Issues.Any() || ReviewScore == 0;
 
 

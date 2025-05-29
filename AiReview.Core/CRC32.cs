@@ -1,6 +1,7 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
-namespace LuminaCode_cli.Roslyn;
+namespace AiReview.Core;
 
 public class CRC32
 {

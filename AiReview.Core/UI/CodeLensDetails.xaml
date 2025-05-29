@@ -31,7 +31,7 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="55" />
                                     <!-- Column for Icon -->
-                                    <ColumnDefinition Width="250" />
+                                    <ColumnDefinition Width="150" />
                                     <!-- Column for Category -->
                                     <ColumnDefinition Width="450" />
                                     <!-- Column for Description -->

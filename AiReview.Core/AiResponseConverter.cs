@@ -68,7 +68,7 @@ public static class AiResponseConverter
 
 	public static CodeReviewSummary Trim(this CodeReviewSummary summary)
 	{
-		summary.Issues = summary.Issues.Where(x => x.Severity.ToLower().Trim() != "low");
+		summary.Issues = summary.Issues.Where(x => x.Severity.ToLower().Trim() != "low").ToArray();
 
 		if (!summary.Issues.Any())
 		{

@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AiResponseConverter.cs" />
+    <Compile Include="CRC32.cs" />
     <Compile Include="Database\ReviewAggregate.cs" />
     <Compile Include="Database\ReviewDatabase.cs" />
     <Compile Include="Database\ReviewReport.cs" />
@@ -84,6 +85,7 @@
     </Compile>
     <Compile Include="ReviewAssistant.cs" />
     <Compile Include="ReviewAssistantBuilder.cs" />
+    <Compile Include="ReviewOptions.cs" />
     <Compile Include="UI\CategoryColorConverter.cs" />
     <Compile Include="UI\CodeLensDetails.xaml.cs">
       <DependentUpon>CodeLensDetails.xaml</DependentUpon>

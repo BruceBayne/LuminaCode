@@ -31,7 +31,7 @@ public sealed class ReviewAssistant
 	)
 	{
 		var estimation = await EstimateCodeRating(userPrompt, temperature);
-		if (estimation != default && estimation.Rating > scoreGate)
+		if (estimation != null && estimation.Rating > scoreGate)
 			return CodeReviewSummary.FromFastEstimation(userPrompt,temperature,estimation);
 
 		return await PerformReview(userPrompt, temperature);
@@ -42,7 +42,7 @@ public sealed class ReviewAssistant
 	{
 		var allModels=await lmClient.GetModelsAsync();
 
-		if (allModels == default)
+		if (allModels == null)
 			throw new Exception("No models loaded");
 
 		var model = allModels.Data.First().Id;

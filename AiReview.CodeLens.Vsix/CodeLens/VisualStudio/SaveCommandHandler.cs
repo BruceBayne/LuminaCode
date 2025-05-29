@@ -16,31 +16,28 @@ namespace AiReview.CodeLens.Vsix.CodeLens.VisualStudio;
 [TextViewRole(PredefinedTextViewRoles.PrimaryDocument)]
 public class SaveCommandHandler : ICommandHandler<SaveCommandArgs>
 {
-	public string DisplayName => nameof(SaveCommandHandler);
+    public string DisplayName => nameof(SaveCommandHandler);
 
-	public bool ExecuteCommand(SaveCommandArgs args, CommandExecutionContext ctx)
-	{
-		try
-		{
+    public bool ExecuteCommand(SaveCommandArgs args, CommandExecutionContext ctx)
+    {
+        try
+        {
+            {
+                _ = ThreadHelper.JoinableTaskFactory.RunAsync(async delegate
+                {
+                    // CodeLenses usually only live as long as the document is open so we just refresh all the connected ones.
 
+                    await Task.CompletedTask;
+                });
+            }
 
+            return true;
+        }
+        catch (Exception ex)
+        {
+            throw;
+        }
+    }
 
-			{
-				_ = ThreadHelper.JoinableTaskFactory.RunAsync(async delegate {
-					// CodeLenses usually only live as long as the document is open so we just refresh all the connected ones.
-
-					await Task.CompletedTask;
-				});
-			}
-
-			return true;
-		}
-		catch (Exception ex)
-		{
-			
-			throw;
-		}
-	}
-
-	public CommandState GetCommandState(SaveCommandArgs args) => CommandState.Available;
+    public CommandState GetCommandState(SaveCommandArgs args) => CommandState.Available;
 }
