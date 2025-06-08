@@ -2,6 +2,8 @@
 using System.ComponentModel.Composition;
 using System.IO;
 using AiReview.Core;
+using AiReview.Core.LLM;
+using AiReview.Core.LLM.Review;
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Language.CodeLens;
 using Microsoft.VisualStudio.LanguageServices;
@@ -46,20 +48,22 @@ internal class CodeLensCallbackService : ICodeLensCallbackListener, IAiReviewSer
         return sourceCode;
     }
 
-    public ReviewOptions GetReviewOptions(string filePath)
+    public LuminaCodeProjectOptions GetProjectOptions(string filePath)
     {
         if (!File.Exists(filePath))
-            return ReviewOptions.Default;
+        {
+            return LuminaCodeProjectOptions.Default;
+        }
 
         var document = VsExtensions.GetDocument(workspace, filePath);
         if (document.Project.FilePath is not { Length: > 0 })
-            return ReviewOptions.Default;
+            return LuminaCodeProjectOptions.Default;
 
         return TryLoadOptions(document.Project.FilePath)
                ?? TryLoadOptions(workspace.CurrentSolution.FilePath)
-               ?? ReviewOptions.Default;
+               ?? LuminaCodeProjectOptions.Default;
 
-        ReviewOptions? TryLoadOptions(string? path)
+        LuminaCodeProjectOptions? TryLoadOptions(string? path)
         {
             if (string.IsNullOrEmpty(path))
                 return null;
@@ -68,8 +72,8 @@ internal class CodeLensCallbackService : ICodeLensCallbackListener, IAiReviewSer
             if (string.IsNullOrEmpty(dir))
                 return null;
 
-            var configPath = Path.Combine(dir, ReviewOptions.OptionsFileName);
-            return ReviewOptions.TryLoad(configPath, out var options) ? options : null;
+            var configPath = Path.Combine(dir, LuminaCodeProjectOptions.OptionsFileName);
+            return LuminaCodeProjectOptions.TryLoad(configPath, out var options) ? options : null;
         }
     }
 

@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AiReview.Core;
+using AiReview.Core.LLM;
+using AiReview.Core.LLM.Review;
 using AiReview.Core.UI;
 using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Language.CodeLens;
 using Microsoft.VisualStudio.Language.CodeLens.Remoting;
 using Microsoft.VisualStudio.Threading;
 
-namespace AiReview.CodeLens.Vsix.CodeLens.Provider
+namespace AiReview.CodeLens.Vsix.CodeLens.CodeReview
 {
-    public class CodeLensDataPoint : IAsyncCodeLensDataPoint
+    public class ReviewDataPoint : IAsyncCodeLensDataPoint
     {
         private readonly ICodeLensCallbackService devEnv;
 
@@ -26,15 +27,11 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
         public CodeLensDescriptor Descriptor { get; }
         public event AsyncEventHandler InvalidatedAsync;
 
-        public CodeLensDataPoint(CodeLensDescriptor descriptor, ICodeLensCallbackService devEnv)
+        public ReviewDataPoint(CodeLensDescriptor descriptor, ICodeLensCallbackService devEnv)
         {
             this.devEnv = devEnv;
             Descriptor = descriptor;
         }
-
-        enum a
-        { }
-
 
 
         public async Task<CodeLensDataPointDescriptor> GetDataAsync(
@@ -56,18 +53,31 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
             var sourceCode = await devEnv.InvokeAsync<string>(this, nameof(IAiReviewService.ExtractSourceCode),
                 [path, from, end], cancellationToken: token);
 
-            var config = await devEnv.InvokeAsync<ReviewOptions>(this, nameof(IAiReviewService.GetReviewOptions),
+            var config = await devEnv.InvokeAsync<LuminaCodeProjectOptions>(this, nameof(IAiReviewService.GetProjectOptions),
                 [Descriptor.FilePath], token);
 
 
-            summary = await TimeBasedCache.GenerateAiResponseAsync(config, sourceCode);
+
+            if (!config.ReviewOptions.IsEnabled)
+            {
+                return new CodeLensDataPointDescriptor
+                {
+                    Description = $"💤 Review::disabled ",
+                    TooltipText = "-",
+                    ImageId = new ImageId(),
+                };
+            }
+
+
+
+            summary = await TimeBasedCache.ReviewCodeAsync(config, sourceCode);
 
 
             if (summary.IsEmpty || summary.HasOnlyMinorIssues)
             {
                 return new CodeLensDataPointDescriptor
                 {
-                    Description = $"LuminaCode::Review:: {summary.LLmProps} [passed]",
+                    Description = $"✅ Review:: {summary.LLmProps} ",
                     TooltipText = "-",
                     ImageId = new ImageId(),
                 };
@@ -77,7 +87,7 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
             var stars = new string('★', summary.ReviewScore).PadRight(10, '☆');
             var descriptor = new CodeLensDataPointDescriptor
             {
-                Description = $"LuminaCode::Review:: {summary.LLmProps} Score: {summary.ReviewScore}/10 {stars}",
+                Description = $"🔍 Review:: {summary.LLmProps} Score: {summary.ReviewScore}/10 {stars}",
                 TooltipText = $"{summary} {path} {from} {to}",
                 IntValue = 10,
             };
@@ -103,11 +113,11 @@ namespace AiReview.CodeLens.Vsix.CodeLens.Provider
                 [Descriptor.FilePath, from, end], cancellationToken: token);
 
 
-            var config = await devEnv.InvokeAsync<ReviewOptions>(this, nameof(IAiReviewService.GetReviewOptions),
+            var config = await devEnv.InvokeAsync<LuminaCodeProjectOptions>(this, nameof(IAiReviewService.GetProjectOptions),
                 [Descriptor.FilePath], token);
 
 
-            summary = await TimeBasedCache.GenerateAiResponseAsync(config, sourceCode);
+            summary = await TimeBasedCache.ReviewCodeAsync(config, sourceCode);
 
             return new CodeLensDetailsDescriptor
             {

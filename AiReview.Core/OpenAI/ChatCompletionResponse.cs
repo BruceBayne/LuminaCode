@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace AiReview.Core.OpenAI
 {
@@ -10,6 +11,8 @@ namespace AiReview.Core.OpenAI
 		public string Model { get; set; }
 		public IEnumerable<ChatChoice> Choices { get; set; }
 		public Usage Usage { get; set; }
+
+		public TimeSpan Duration { get; set; }
 	}
 
 

@@ -66,11 +66,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Bulb\LowerCaseSuggestedAction.cs" />
+    <Compile Include="Bulb\TestSuggestedActionsSourceProvider.cs" />
+    <Compile Include="Bulb\TestSuggestedActionsSource.cs" />
+    <Compile Include="Bulb\UpperCaseSuggestedAction.cs" />
+    <Compile Include="CodeLens\BetterNaming\BetterNamingPoint.cs" />
+    <Compile Include="CodeLens\Ext.cs" />
     <Compile Include="CodeLens\IAiReviewService.cs" />
-    <Compile Include="CodeLens\Provider\TimeBasedCache.cs" />
+    <Compile Include="CodeLens\BetterNaming\BetterNamingProvider.cs" />
+    <Compile Include="CodeLens\CodeReview\TimeBasedCache.cs" />
     <Compile Include="CodeLens\UI\ViewElementFactory.cs" />
-    <Compile Include="CodeLens\Provider\CodeLensDataPoint.cs" />
-    <Compile Include="CodeLens\Provider\CodeLensDataPointProvider.cs" />
+    <Compile Include="CodeLens\CodeReview\ReviewDataPoint.cs" />
+    <Compile Include="CodeLens\CodeReview\CodeLensDataPointProvider.cs" />
     <Compile Include="CodeLens\VisualStudio\CodeLensCallbackService.cs" />
     <Compile Include="CodeLens\VisualStudio\SaveCommandHandler.cs" />
     <Compile Include="CodeLens\VisualStudio\VsExtensions.cs" />

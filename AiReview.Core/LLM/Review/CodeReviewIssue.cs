@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AiReview.Core.UI;
+namespace AiReview.Core.LLM.Review;
 
 [Serializable]
 public sealed class CodeReviewIssue

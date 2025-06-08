@@ -3,6 +3,9 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using AiReview.Core;
 using AiReview.Core.Database;
+using AiReview.Core.LLM;
+using AiReview.Core.LLM.Review;
+using AiReview.Core.OpenAI.Client;
 using AiReview.Core.UI;
 using Colorful;
 using LuminaCode_cli.Roslyn;
@@ -125,14 +128,14 @@ public sealed class LuminaCodeCliEngine
 	{
 		public IReadOnlyCollection<MethodData> ToReview { get; init; }
 		public string AiModel { get; init; }
-		public ReviewAssistant assistant { get; init; }
+		public OpenAiAssistant assistant { get; init; }
 	}
 
 
 	public async Task<SolutionContext> CreateContext()
 	{
 		
-		var assistant = ReviewAssistantBuilder
+		var assistant = OpenAiAssistantBuilder
 			.Create()
 			.WithSystemPrompt(AiPrompt);
 

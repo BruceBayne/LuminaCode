@@ -17,7 +17,7 @@ public sealed class TestCases : TheoryData<string, string>
 			var sourceContent = File.ReadAllText(filePath);
 
 			// Define a pattern to match all summary blocks with optional Name field
-			var summaryPattern = @"/// <summary>(?s)(.*?)/// </summary>";
+			const string summaryPattern = @"/// <summary>(?s)(.*?)/// </summary>";
 
 			// Match all summary blocks
 			var summaryMatches = Regex.Matches(sourceContent, summaryPattern, RegexOptions.Singleline);
@@ -29,16 +29,16 @@ public sealed class TestCases : TheoryData<string, string>
 			foreach (Match match in summaryMatches)
 			{
 				// Extract the matched block
-				string summaryBlock = match.Value;
+				var summaryBlock = match.Value;
 
 				// Try to find the Name key inside the block
 				var nameMatch = Regex.Match(summaryBlock, @"///\s*Name\s*:\s*(.*?)\s*(?:\n|$)");
 
 				// Extract the Name if it exists, otherwise default to an empty string
-				string name = nameMatch.Success ? nameMatch.Groups[1].Value.Trim() : "";
+				var name = nameMatch.Success ? nameMatch.Groups[1].Value.Trim() : "";
 
 				// Normalize the file path
-				string normalizedPath = filePath
+				var normalizedPath = filePath
 					.Replace($"{folderPath}{Path.DirectorySeparatorChar}", string.Empty)
 					.Replace("\\", "/");
 

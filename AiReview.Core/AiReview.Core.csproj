@@ -59,7 +59,12 @@
     <Compile Include="Database\ReviewDatabase.cs" />
     <Compile Include="Database\ReviewReport.cs" />
     <Compile Include="Database\SolutionDatabase.cs" />
-    <Compile Include="PromptDatabase.cs" />
+    <Compile Include="ExperimentalAIClient\Class1.cs" />
+    <Compile Include="LLM\BasicLlmAnswer.cs" />
+    <Compile Include="LLM\Naming\BetterNames.cs" />
+    <Compile Include="LLM\PromptDatabase.cs" />
+    <Compile Include="LLM\Naming\BetterNamingOptions.cs" />
+    <Compile Include="LLM\LuminaCodeProjectOptions.cs" />
     <Compile Include="OpenAI\ChatChoice.cs" />
     <Compile Include="OpenAI\ChatCompletionResponse.cs" />
     <Compile Include="OpenAI\ChatMessage.cs" />
@@ -83,16 +88,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="ReviewAssistant.cs" />
-    <Compile Include="ReviewAssistantBuilder.cs" />
-    <Compile Include="ReviewOptions.cs" />
+    <Compile Include="OpenAI\Client\OpenAiAssistant.cs" />
+    <Compile Include="OpenAI\Client\OpenAiAssistantBuilder.cs" />
+    <Compile Include="LLM\Review\ReviewOptions.cs" />
     <Compile Include="UI\CategoryColorConverter.cs" />
     <Compile Include="UI\CodeLensDetails.xaml.cs">
       <DependentUpon>CodeLensDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\CodeLensDetailsModel.cs" />
-    <Compile Include="UI\CodeReviewIssue.cs" />
-    <Compile Include="UI\CodeReviewSummary.cs" />
+    <Compile Include="LLM\Review\CodeReviewIssue.cs" />
+    <Compile Include="LLM\Review\CodeReviewSummary.cs" />
     <Compile Include="UI\StarRatingConverter.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

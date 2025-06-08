@@ -1,9 +1,9 @@
-﻿using AiReview.Core;
+﻿using AiReview.Core.LLM;
 
 namespace AiReview.CodeLens.Vsix.CodeLens;
 
 interface IAiReviewService
 {
     string ExtractSourceCode(string filePath, int from, int to);
-    ReviewOptions GetReviewOptions(string filePath);
+    LuminaCodeProjectOptions GetProjectOptions(string filePath);
 }
