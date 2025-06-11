@@ -1,12 +1,8 @@
-using AiReview.Core;
-using AiReview.Core.ExperimentalAIClient;
 using AiReview.Core.LLM;
 using AiReview.Core.LLM.Review;
 using AiReview.Core.OpenAI;
 using AiReview.Core.OpenAI.Client;
-using AiReview.Core.UI;
 using FluentAssertions;
-using Newtonsoft.Json;
 using Xunit.Abstractions;
 
 namespace AiReview.Tests.Model;

@@ -25,13 +25,16 @@ public class BetterNamingProvider(ICodeLensCallbackService cbs) : IAsyncCodeLens
     }
 
 
-    public Task<IAsyncCodeLensDataPoint> CreateDataPointAsync(
+    public async Task<IAsyncCodeLensDataPoint> CreateDataPointAsync(
         CodeLensDescriptor descriptor,
         CodeLensDescriptorContext descriptorContext,
         CancellationToken token
     )
     {
+
+        await Task.CompletedTask.ConfigureAwait(false);
+        //var opts = await BetterNamingSettingsModel.GetLiveInstanceAsync();
         var dataPoint = new BetterNamingPoint(descriptor, cbs);
-        return Task.FromResult<IAsyncCodeLensDataPoint>(dataPoint);
+        return dataPoint;
     }
 }
