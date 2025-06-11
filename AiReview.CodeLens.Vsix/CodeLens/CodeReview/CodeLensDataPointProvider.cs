@@ -12,7 +12,7 @@ namespace AiReview.CodeLens.Vsix.CodeLens.CodeReview
     [ContentType("CSharp")]
     [Priority(515)]
     [method: ImportingConstructor]
-    public class CodeLensDataPointProvider(ICodeLensCallbackService cbs) : IAsyncCodeLensDataPointProvider
+    public class CodeReviewProvider(ICodeLensCallbackService cbs) : IAsyncCodeLensDataPointProvider
     {
         public Task<bool> CanCreateDataPointAsync(
             CodeLensDescriptor descriptor,

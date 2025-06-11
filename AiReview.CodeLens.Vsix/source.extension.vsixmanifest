@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="LuminaCode Ai Review Code lens" Version="1.01" Language="en-US" Publisher="Fidel" />
-        <DisplayName>LuminaCode Ai Review Code lens</DisplayName>
-        <Description xml:space="preserve">LuminaCode Ai Review Code lens extension.</Description>
+        <Identity Id="LuminaCode Ai tools." Version="1.02" Language="en-US" Publisher="Fidel" />
+        <DisplayName>LuminaCode Ai Tools</DisplayName>
+        <Description xml:space="preserve">LuminaCode Ai Tools.</Description>
+        <MoreInfo>https://github.com/BruceBayne/LuminaCode</MoreInfo>
+        <GettingStartedGuide>https://github.com/BruceBayne/LuminaCode</GettingStartedGuide>
+        <ReleaseNotes>https://github.com/BruceBayne/LuminaCode</ReleaseNotes>
+        <Tags>Ai,LLM,CodeLens</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0, 18.0)">

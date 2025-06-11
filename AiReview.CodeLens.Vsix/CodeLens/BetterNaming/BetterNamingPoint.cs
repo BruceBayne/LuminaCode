@@ -84,7 +84,7 @@ public class BetterNamingPoint : IAsyncCodeLensDataPoint
 
         var descriptor = new CodeLensDataPointDescriptor
         {
-            Description = $"🔠 BetterNaming: X \r\n {string.Join(", ", output.Names)}",
+            Description = $"🔠 BetterNaming: {string.Join(", ", output.Names)}",
             TooltipText = $"{output.ToTooltipText()}",
             IntValue = 10,
         };

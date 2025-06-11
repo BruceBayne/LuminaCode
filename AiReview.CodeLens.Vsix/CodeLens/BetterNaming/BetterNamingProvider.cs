@@ -31,7 +31,7 @@ public class BetterNamingProvider(ICodeLensCallbackService cbs) : IAsyncCodeLens
         CancellationToken token
     )
     {
-
+     
         await Task.CompletedTask.ConfigureAwait(false);
         //var opts = await BetterNamingSettingsModel.GetLiveInstanceAsync();
         var dataPoint = new BetterNamingPoint(descriptor, cbs);
