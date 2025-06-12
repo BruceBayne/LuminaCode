@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AiReview.CodeLens.Vsix.Ai;
 using AiReview.CodeLens.Vsix.CodeLens.CodeReview;
 using AiReview.Core.LLM;
 using AiReview.Core.LLM.Naming;

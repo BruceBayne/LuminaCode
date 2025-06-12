@@ -6,7 +6,7 @@ using AiReview.Core.LLM.Naming;
 using AiReview.Core.LLM.Review;
 using AiReview.Core.OpenAI.Client;
 
-namespace AiReview.CodeLens.Vsix.CodeLens.CodeReview;
+namespace AiReview.CodeLens.Vsix.Ai;
 
 internal sealed class TimeBasedCache
 {

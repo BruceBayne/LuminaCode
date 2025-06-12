@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using AiReview.CodeLens.Vsix.Ai;
 using AiReview.Core.LLM;
 using AiReview.Core.LLM.Review;
 using AiReview.Core.UI;
@@ -141,7 +142,7 @@ namespace AiReview.CodeLens.Vsix.CodeLens.CodeReview
                     }
                 ],
 
-                CustomData = [new CodeLensDetailsModel { Issues = summary.Issues, ReviewScore = summary.ReviewScore }],
+                CustomData = [new ReviewDetailsModel { Issues = summary.Issues, ReviewScore = summary.ReviewScore }],
 
                 PaneNavigationCommands =
                 [

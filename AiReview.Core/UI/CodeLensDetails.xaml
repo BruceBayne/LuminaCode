@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              ToolTip="Ai-Review"
              d:DesignHeight="950" d:DesignWidth="600"
-             d:DataContext="{d:DesignInstance local:CodeLensDetailsModel, IsDesignTimeCreatable=True}">
+             d:DataContext="{d:DesignInstance local:ReviewDetailsModel, IsDesignTimeCreatable=True}">
     <UserControl.Resources>
         <local:StarRatingConverter x:Key="StarRatingConverter" />
     </UserControl.Resources>

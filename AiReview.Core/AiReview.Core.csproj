@@ -95,7 +95,7 @@
     <Compile Include="UI\CodeLensDetails.xaml.cs">
       <DependentUpon>CodeLensDetails.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\CodeLensDetailsModel.cs" />
+    <Compile Include="UI\ReviewDetailsModel.cs" />
     <Compile Include="LLM\Review\CodeReviewIssue.cs" />
     <Compile Include="LLM\Review\CodeReviewSummary.cs" />
     <Compile Include="UI\StarRatingConverter.cs" />

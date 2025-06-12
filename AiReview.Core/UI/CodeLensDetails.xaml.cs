@@ -7,7 +7,7 @@ namespace AiReview.Core.UI
 	/// </summary>
 	public partial class CodeLensDetailsControl : UserControl
 	{
-		public CodeLensDetailsControl(CodeLensDetailsModel model)
+		public CodeLensDetailsControl(ReviewDetailsModel model)
 		{
 			InitializeComponent();
 			DataContext = model;
