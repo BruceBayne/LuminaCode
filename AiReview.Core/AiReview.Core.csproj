@@ -65,6 +65,8 @@
     <Compile Include="LLM\PromptDatabase.cs" />
     <Compile Include="LLM\Naming\BetterNamingOptions.cs" />
     <Compile Include="LLM\LuminaCodeProjectOptions.cs" />
+    <Compile Include="LLM\PurityInspector\PurityInspectorOptions.cs" />
+    <Compile Include="LLM\PurityInspector\PurityInspectionResult.cs" />
     <Compile Include="OpenAI\ChatChoice.cs" />
     <Compile Include="OpenAI\ChatCompletionResponse.cs" />
     <Compile Include="OpenAI\ChatMessage.cs" />

@@ -38,8 +38,7 @@ public static class PromptDatabase
                                               Act as an expert code reviewer
                                               Review following C# code
 
-                                              Focus only on directly observable issues:
-                                              concurrency, resource management, async usage, security, logic, API misuse, performance, events, serialization, and dynamic execution. 
+                                              Focus only on directly observable issues.
                                               Identify risks like race conditions, deadlocks, leaks, unsafe patterns, or inefficient practices.
                                               Force exclude potential issues, focus only on real findings.
 
@@ -65,7 +64,11 @@ public static class PromptDatabase
                                            """;
 
     public static string BetterNamingPrompt { get; set; } =
-    //    "Suggest concise, meaningful .NET-style names for the given C# code snippet. The code may be partial or illustrative. Focus on purpose inference, not syntax validity. force output as a JSON array of name suggestions only.\n";
-    "Suggest concise, meaningful names for the code (function or entity). Force output as JSON array only: ";
-    //"Based on the following code context, suggest a couple compact, concise, meaningful function names (force output as json array, no extra information): ";
+        "Suggest concise, meaningful names for the code (function or entity). Force output as JSON array only: ";
+
+
+    public static string PurityInspectionPrompt { get; set; } =
+        "Identify all extractable compact pure functions, in following C# code." +
+        "Force output as JSON with 'functionName' and compact 'description': ";
 }
+ 

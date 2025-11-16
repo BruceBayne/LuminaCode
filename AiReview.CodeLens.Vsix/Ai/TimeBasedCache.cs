@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using AiReview.Core;
 using AiReview.Core.LLM;
 using AiReview.Core.LLM.Naming;
+using AiReview.Core.LLM.PurityInspector;
 using AiReview.Core.LLM.Review;
 using AiReview.Core.OpenAI.Client;
 
@@ -12,6 +13,27 @@ internal sealed class TimeBasedCache
 {
     private static readonly ConcurrentDictionary<string, CodeReviewSummary> ReviewCache = new();
     private static readonly ConcurrentDictionary<string, BetterNamesAnswer> BetterNamingCache = new();
+    private static readonly ConcurrentDictionary<string, PurityInspectionResult> PurityNamesCache = new();
+
+
+    public static async Task<PurityInspectionResult> GetPurityInspectionResultAsync(string prompt, string code)
+    {
+        var aiPromptHash = $"{CRC32.Compute(prompt.ToLowerInvariant()):X}";
+        var codeHash = $"{CRC32.Compute(code):X}";
+
+        var assistant = OpenAiAssistantBuilder
+            .Create()
+            .WithSystemPromptRaw(prompt);
+
+        var modelPromptCode = $"{await assistant.GetDefaultModel()}/{aiPromptHash}/{codeHash}";
+
+        if (PurityNamesCache.TryGetValue(modelPromptCode, out var inspectionResult))
+            return inspectionResult;
+
+        var aiResponse = await assistant.GetPurityInspectionResults(code);
+        PurityNamesCache.TryAdd(modelPromptCode, aiResponse);
+        return aiResponse;
+    }
 
 
     public static async Task<BetterNamesAnswer> GetBetterNamingAsync(string prompt, string code)

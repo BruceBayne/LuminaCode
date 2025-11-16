@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AiReview.CodeLens.Vsix.Ai;
+﻿using AiReview.CodeLens.Vsix.Ai;
 using AiReview.Core.LLM;
 using AiReview.Core.LLM.Review;
 using AiReview.Core.UI;
@@ -9,157 +6,162 @@ using Microsoft.VisualStudio.Core.Imaging;
 using Microsoft.VisualStudio.Language.CodeLens;
 using Microsoft.VisualStudio.Language.CodeLens.Remoting;
 using Microsoft.VisualStudio.Threading;
+using Microsoft.VisualStudio.Utilities;
+using System;
+using System.ComponentModel.Composition;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace AiReview.CodeLens.Vsix.CodeLens.CodeReview
+namespace AiReview.CodeLens.Vsix.CodeLens.CodeReview;
+
+
+[Export(typeof(IAsyncCodeLensDataPoint))]
+[Name("LuminaCode.Review.DataPoint")]
+public class ReviewDataPoint : IAsyncCodeLensDataPoint
 {
-    public class ReviewDataPoint : IAsyncCodeLensDataPoint
+    private readonly ICodeLensCallbackService devEnv;
+
+    private CodeReviewSummary summary = CodeReviewSummary.Dummy;
+
+    private static readonly CodeLensDetailEntryCommand refreshCmdId = new()
     {
-        private readonly ICodeLensCallbackService devEnv;
+        CommandSet = new Guid("1d9c281d-50d6-4276-9c70-374b67f5be52"),
+        CommandId = 0x0100
+    };
 
-        private CodeReviewSummary summary = CodeReviewSummary.Dummy;
 
-        private static readonly CodeLensDetailEntryCommand refreshCmdId = new()
+    public CodeLensDescriptor Descriptor { get; }
+    public event AsyncEventHandler InvalidatedAsync;
+
+    public ReviewDataPoint(CodeLensDescriptor descriptor, ICodeLensCallbackService devEnv)
+    {
+        this.devEnv = devEnv;
+        Descriptor = descriptor;
+    }
+
+
+    public async Task<CodeLensDataPointDescriptor> GetDataAsync(
+        CodeLensDescriptorContext ctx,
+        CancellationToken token
+    )
+    {
+        await Task.CompletedTask.ConfigureAwait(false);
+
+
+        var path = Descriptor.FilePath;
+        var from = ctx.ApplicableSpan.Value.Start;
+        var to = ctx.ApplicableSpan.Value.Length;
+        var end = ctx.ApplicableSpan.Value.End;
+
+
+        var sourceCode = await devEnv.InvokeAsync<string>(this, nameof(IAiReviewService.ExtractSourceCode),
+            [path, from, end], cancellationToken: token);
+
+        var config = await devEnv.InvokeAsync<LuminaCodeProjectOptions>(this,
+            nameof(IAiReviewService.GetProjectOptions),
+            [Descriptor.FilePath], token);
+
+
+        if (!config.ReviewOptions.IsEnabled)
         {
-            CommandSet = new Guid("1d9c281d-50d6-4276-9c70-374b67f5be52"),
-            CommandId = 0x0100
+            return new CodeLensDataPointDescriptor
+            {
+                Description = "🔍: 💤",
+                TooltipText = "-",
+                ImageId = new ImageId(),
+            };
+        }
+
+
+        summary = await TimeBasedCache.ReviewCodeAsync(config, sourceCode);
+
+
+        if (summary.IsEmpty || summary.HasOnlyMinorIssues)
+        {
+            return new CodeLensDataPointDescriptor
+            {
+                Description = $"🔍: 🗸",
+                TooltipText = "-",
+                ImageId = new ImageId(),
+            };
+        }
+
+
+        var stars = new string('★', summary.ReviewScore).PadRight(10, '☆');
+        var descriptor = new CodeLensDataPointDescriptor
+        {
+            Description = $"🔍: Score: {summary.ReviewScore}/10 {stars} ✦{summary.LLmProps}",
+            TooltipText = $"{summary} {path} {from} {to}",
+            IntValue = 10,
         };
 
+        return descriptor;
+    }
 
-        public CodeLensDescriptor Descriptor { get; }
-        public event AsyncEventHandler InvalidatedAsync;
+    public async Task<CodeLensDetailsDescriptor> GetDetailsAsync(
+        CodeLensDescriptorContext ctx,
+        CancellationToken token
+    )
+    {
+        await Task.CompletedTask.ConfigureAwait(false);
 
-        public ReviewDataPoint(CodeLensDescriptor descriptor, ICodeLensCallbackService devEnv)
+        if (ctx.ApplicableSpan == null)
+            return null;
+
+        var from = ctx.ApplicableSpan.Value.Start;
+        var end = ctx.ApplicableSpan.Value.End;
+
+
+        var sourceCode = await devEnv.InvokeAsync<string>(this, nameof(IAiReviewService.ExtractSourceCode),
+            [Descriptor.FilePath, from, end], cancellationToken: token);
+
+
+        var config = await devEnv.InvokeAsync<LuminaCodeProjectOptions>(this,
+            nameof(IAiReviewService.GetProjectOptions),
+            [Descriptor.FilePath], token);
+
+
+        summary = await TimeBasedCache.ReviewCodeAsync(config, sourceCode);
+
+        return new CodeLensDetailsDescriptor
         {
-            this.devEnv = devEnv;
-            Descriptor = descriptor;
-        }
-
-
-        public async Task<CodeLensDataPointDescriptor> GetDataAsync(
-            CodeLensDescriptorContext ctx,
-            CancellationToken token
-        )
-        {
-
-            
-            await Task.CompletedTask.ConfigureAwait(false);
-
-
-            var path = Descriptor.FilePath;
-            var from = ctx.ApplicableSpan.Value.Start;
-            var to = ctx.ApplicableSpan.Value.Length;
-            var end = ctx.ApplicableSpan.Value.End;
-
-
-            var sourceCode = await devEnv.InvokeAsync<string>(this, nameof(IAiReviewService.ExtractSourceCode),
-                [path, from, end], cancellationToken: token);
-
-            var config = await devEnv.InvokeAsync<LuminaCodeProjectOptions>(this, nameof(IAiReviewService.GetProjectOptions),
-                [Descriptor.FilePath], token);
-
-
-
-            if (!config.ReviewOptions.IsEnabled)
-            {
-                return new CodeLensDataPointDescriptor
+            Headers =
+            [
+                new()
                 {
-                    Description = $"💤 Review::disabled ",
-                    TooltipText = "-",
-                    ImageId = new ImageId(),
-                };
-            }
-
-
-
-            summary = await TimeBasedCache.ReviewCodeAsync(config, sourceCode);
-
-
-            if (summary.IsEmpty || summary.HasOnlyMinorIssues)
-            {
-                return new CodeLensDataPointDescriptor
+                    DisplayName = "Tip",
+                    IsVisible = true,
+                    UniqueName = "Ai-Tip",
+                    Width = 1.0,
+                }
+            ],
+            Entries =
+            [
+                new()
                 {
-                    Description = $"✅ Review:: {summary.LLmProps} ",
-                    TooltipText = "-",
-                    ImageId = new ImageId(),
-                };
-            }
+                    Tooltip = "XX",
+                    NavigationCommand = refreshCmdId,
+                    Fields = [new CodeLensDetailEntryField { Text = "FIELD" }]
+                }
+            ],
 
+            CustomData = [new ReviewDetailsModel { Issues = summary.Issues, ReviewScore = summary.ReviewScore }],
 
-            var stars = new string('★', summary.ReviewScore).PadRight(10, '☆');
-            var descriptor = new CodeLensDataPointDescriptor
-            {
-                Description = $"🔍 Review:: {summary.LLmProps} Score: {summary.ReviewScore}/10 {stars}",
-                TooltipText = $"{summary} {path} {from} {to}",
-                IntValue = 10,
-            };
-
-            return descriptor;
-        }
-
-        public async Task<CodeLensDetailsDescriptor> GetDetailsAsync(
-            CodeLensDescriptorContext ctx,
-            CancellationToken token
-        )
-        {
-            await Task.CompletedTask.ConfigureAwait(false);
-
-            if (ctx.ApplicableSpan == null)
-                return null;
-
-            var from = ctx.ApplicableSpan.Value.Start;
-            var end = ctx.ApplicableSpan.Value.End;
-
-
-            var sourceCode = await devEnv.InvokeAsync<string>(this, nameof(IAiReviewService.ExtractSourceCode),
-                [Descriptor.FilePath, from, end], cancellationToken: token);
-
-
-            var config = await devEnv.InvokeAsync<LuminaCodeProjectOptions>(this, nameof(IAiReviewService.GetProjectOptions),
-                [Descriptor.FilePath], token);
-
-
-            summary = await TimeBasedCache.ReviewCodeAsync(config, sourceCode);
-
-            return new CodeLensDetailsDescriptor
-            {
-                Headers =
-                [
-                    new()
-                    {
-                        DisplayName = "Tip",
-                        IsVisible = true,
-                        UniqueName = "Ai-Tip",
-                        Width = 1.0,
-                    }
-                ],
-                Entries =
-                [
-                    new()
-                    {
-                        Tooltip = "XX",
-                        NavigationCommand = refreshCmdId,
-                        Fields = [new CodeLensDetailEntryField { Text = "FIELD" }]
-                    }
-                ],
-
-                CustomData = [new ReviewDetailsModel { Issues = summary.Issues, ReviewScore = summary.ReviewScore }],
-
-                PaneNavigationCommands =
-                [
-                    new CodeLensDetailPaneCommand
-                    {
-                        CommandDisplayName = "Refresh",
-                        CommandId = refreshCmdId,
-                        CommandArgs = [(object)1]
-                    },
-                    new CodeLensDetailPaneCommand
-                    {
-                        CommandDisplayName = "Refresh2",
-                        CommandId = refreshCmdId,
-                        CommandArgs = [(object)1]
-                    }
-                ]
-            };
-        }
+            PaneNavigationCommands =
+            [
+                new CodeLensDetailPaneCommand
+                {
+                    CommandDisplayName = "Refresh",
+                    CommandId = refreshCmdId,
+                    CommandArgs = [(object)1]
+                },
+                new CodeLensDetailPaneCommand
+                {
+                    CommandDisplayName = "Refresh2",
+                    CommandId = refreshCmdId,
+                    CommandArgs = [(object)1]
+                }
+            ]
+        };
     }
 }

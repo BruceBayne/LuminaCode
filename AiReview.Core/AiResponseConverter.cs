@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AiReview.Core.LLM.Naming;
+using AiReview.Core.LLM.PurityInspector;
 using AiReview.Core.LLM.Review;
 using AiReview.Core.OpenAI;
 using Newtonsoft.Json.Linq;
@@ -67,6 +68,16 @@ public static class AiResponseConverter
         return summary;
     }
 
+
+    public static PurityInspectionResult ToPurityInspectionResults(this ChatCompletionResponse aiResponse)
+    {
+        var textResponse = aiResponse.Choices.First().Message.content;
+        var model = TrimModel(aiResponse.Model);
+        var summary = ToPurityInspectionResult(textResponse);
+        summary.RawResponse = textResponse;
+        summary.LLmProps = $"{model}";
+        return summary;
+    }
 
     public static BetterNamesAnswer ToBetterNames(this ChatCompletionResponse aiResponse)
     {
@@ -137,12 +148,69 @@ public static class AiResponseConverter
 
     public static string ExtractJsonArrayOnly(string input)
     {
-        var match = Regex.Match(input, @"\[\s*(""[^""]*""\s*(,\s*""[^""]*""\s*)*)\]");
+        // Remove code fences like ```json or ```csharp
+        var cleanedInput = Regex.Replace(input, @"^```[a-zA-Z]*\s*|```$", string.Empty, RegexOptions.Multiline);
+
+        // Match any JSON array (objects or primitives)
+        var match = Regex.Match(cleanedInput, @"\[\s*(?:\{.*?\}|\s*[^]]*?)*\s*\]", RegexOptions.Singleline);
+
         if (match.Success)
             return match.Value;
 
         throw new FormatException("No valid JSON array found in the input.");
     }
+
+
+    public static PurityInspectionResult ToPurityInspectionResult(string aiResponse)
+    {
+        try
+        {
+            var json = ExtractJsonArrayOnly(aiResponse);
+            var rootToken = JToken.Parse(json);
+            var candidateProps = new[] { "functions", "pureFunctions", "results", "findings" };
+            var nameFields = new[] { "name", "functionName" };
+
+            var items = new List<FunctionInfo>();
+
+            // If the root itself is an array, wrap it in a temporary object
+            if (rootToken is JArray arrayRoot)
+            {
+                rootToken = new JObject { ["root"] = arrayRoot };
+                candidateProps = ["root"];
+            }
+
+            foreach (var prop in candidateProps)
+            {
+                if (rootToken[prop] is JArray arr)
+                {
+                    foreach (var obj in arr.OfType<JObject>())
+                    {
+                        // Flexible name detection
+                        var nameToken = nameFields.Select(f => obj[f]).FirstOrDefault(t => t != null);
+                        var descriptionToken = obj["description"];
+
+                        if (nameToken != null && descriptionToken != null)
+                        {
+                            items.Add(new FunctionInfo
+                            {
+                                SuggestedName = nameToken.ToString(),
+                                Description = descriptionToken.ToString()
+                            });
+                        }
+                    }
+                }
+            }
+
+            return new PurityInspectionResult { Functions = items.ToArray() };
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(
+                $@"LLM Response Deserialization Exception : {e.Message} {Environment.NewLine} >>>> JSON:{aiResponse}");
+            throw;
+        }
+    }
+
 
     public static BetterNamesAnswer ToBetterNames(string aiResponse)
     {

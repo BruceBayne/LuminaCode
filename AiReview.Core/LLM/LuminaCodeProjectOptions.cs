@@ -1,8 +1,9 @@
-﻿using System;
-using System.IO;
-using AiReview.Core.LLM.Naming;
+﻿using AiReview.Core.LLM.Naming;
+using AiReview.Core.LLM.PurityInspector;
 using AiReview.Core.LLM.Review;
 using Newtonsoft.Json;
+using System;
+using System.IO;
 
 namespace AiReview.Core.LLM;
 
@@ -11,6 +12,7 @@ public sealed record LuminaCodeProjectOptions
 {
     public ReviewOptions ReviewOptions = new ReviewOptions();
     public BetterNamingOptions BetterNamingOptions = new BetterNamingOptions();
+    public PurityInspectorOptions PureInspectorOptions = new PurityInspectorOptions();
 
     public static readonly LuminaCodeProjectOptions Default = new();
 

@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AiReview.Core.LLM.Naming;
+using AiReview.Core.LLM.PurityInspector;
 using AiReview.Core.LLM.Review;
 
 namespace AiReview.Core.OpenAI.Client;
@@ -49,7 +50,16 @@ public sealed class OpenAiAssistant
         return AiResponseConverter.TrimModel(model);
     }
 
-
+    public async Task<PurityInspectionResult> GetPurityInspectionResults(string userPrompt, float temperature = 0)
+    {
+        var chatMessages = ToChatMessages(userPrompt);
+        var response = await lmClient.GenerateChatResponseAsync(chatMessages, temperature: temperature);
+        var summary = response.ToPurityInspectionResults();
+        summary.Temperature = temperature;
+        summary.RawRequest = string.Join(Environment.NewLine, chatMessages.Select(x => x.content));
+        summary.Duration = response.Duration;
+        return summary;
+    }
     public async Task<BetterNamesAnswer> GetBetterNames(string userPrompt, float temperature = 0)
     {
         var chatMessages = ToChatMessages(userPrompt);

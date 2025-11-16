@@ -66,6 +66,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CodeLens\PurityInspector\PurityInspectorPoint.cs" />
+    <Compile Include="CodeLens\PurityInspector\PurityInspectorProvider.cs" />
     <Compile Include="Suggestions\LowerCaseSuggestedAction.cs" />
     <Compile Include="Suggestions\TestSuggestedActionsSourceProvider.cs" />
     <Compile Include="Suggestions\TestSuggestedActionsSource.cs" />
@@ -78,7 +80,7 @@
     <Compile Include="Ai\TimeBasedCache.cs" />
     <Compile Include="CodeLens\CodeReview\UI\ViewElementFactory.cs" />
     <Compile Include="CodeLens\CodeReview\ReviewDataPoint.cs" />
-    <Compile Include="CodeLens\CodeReview\CodeLensDataPointProvider.cs" />
+    <Compile Include="CodeLens\CodeReview\CodeReviewProvider.cs" />
     <Compile Include="CodeLens\VisualStudio\CodeLensCallbackService.cs" />
     <Compile Include="CodeLens\VisualStudio\SaveCommandHandler.cs" />
     <Compile Include="CodeLens\VisualStudio\VsExtensions.cs" />

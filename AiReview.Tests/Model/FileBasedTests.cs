@@ -1,8 +1,12 @@
+using AiReview.Core;
 using AiReview.Core.LLM;
+using AiReview.Core.LLM.PurityInspector;
 using AiReview.Core.LLM.Review;
 using AiReview.Core.OpenAI;
 using AiReview.Core.OpenAI.Client;
 using FluentAssertions;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Xunit.Abstractions;
 
 namespace AiReview.Tests.Model;
@@ -84,6 +88,18 @@ public sealed class FileBasedTests(ITestOutputHelper output) : BasePromptTest
             Console.WriteLine($"TPS: {output.LLmProps}/{output.TokensPerSecond} Output: {output}");
             Console.WriteLine("-----");
         }
+    }
+
+    [Fact]
+    public async Task Zuu()
+    {
+        var assistant = OpenAiAssistantBuilder
+            .Create()
+            .WithSystemPromptRaw(PromptDatabase.PurityInspectionPrompt);
+
+        var result = await assistant.GetPurityInspectionResults(
+            " public int MultiplyAndAdd(int x, int y, int z)\r\n    {\r\n        int product = x * y;\r\n        return product + z;\r\n    }");
+        Console.WriteLine(result);
     }
 
 

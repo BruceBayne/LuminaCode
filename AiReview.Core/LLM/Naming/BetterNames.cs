@@ -13,6 +13,6 @@ namespace AiReview.Core.LLM.Naming
 
         public override string ToString() => IsEmpty ? "No names available." : string.Join(",", Names);
 
-        public string ToTooltipText() => $"TokensPerSecond:{TokensPerSecond:F2}";
+        public string ToTooltipText() => $"TokensPerSecond:{TokensPerSecond:F2} ✦{this.LLmProps}";
     }
 }
